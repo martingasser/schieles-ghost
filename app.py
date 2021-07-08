@@ -1,6 +1,7 @@
 import streamlit as st
 from transformers import pipeline
-import tokenizers
+import base64
+import torch
 
 model_selectbox = st.sidebar.selectbox(
     'Choose a model',
@@ -30,10 +31,19 @@ name = st.selectbox('Choose a character to start with', names)
 
 @st.cache(allow_output_mutation=True)
 def get_pipeline():
+    device = 0 if torch.cuda.is_available() else -1
     if model_selectbox == 'German recipes':
-        return pipeline('text-generation',model='./gpt2-gerchef', tokenizer='anonymous-german-nlp/german-gpt2', device=0)
+        return pipeline('text-generation',model='./gpt2-gerchef', tokenizer='anonymous-german-nlp/german-gpt2', device=device)
     elif model_selectbox == 'Schiele':
-        return pipeline('text-generation',model='./gpt2-schiele', tokenizer='anonymous-german-nlp/german-gpt2', device=0)
+        return pipeline('text-generation',model='./gpt2-schiele', tokenizer='anonymous-german-nlp/german-gpt2', device=device)
+
+class DownloadLink:
+    def __init__(self, text):
+        b64 = base64.b64encode(text.encode()).decode()
+        self.href = f'<a href="data:file/markdown;base64,{b64}" download="generated.md">Download generated output as Markdown File</a>'
+
+    def _repr_html_(self):
+        return self.href
 
 with st.form(key='my_form'):
     name = name.rstrip()
@@ -53,12 +63,20 @@ with st.form(key='my_form'):
             temperature=temperature)[0]['generated_text']
         lines = result.split('\n')
 
+        generated = ''
+
         for i, line in enumerate(lines):
             if ':' in line:
                 p = line.find(':')
                 speaker = line[0:p]
                 txt = line[p+1:]
                 txt = txt.replace('`', '')
-                st.markdown(f'__{speaker}__: {txt}')
+                #st.markdown(f'__{speaker}__: {txt}')
+                generated += f'__{speaker}__: {txt}\n\n'
             #else:
             #    st.markdown(line)
+
+        d = DownloadLink(generated)
+        st.write(d)
+
+        st.markdown(generated)
