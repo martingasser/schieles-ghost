@@ -31,10 +31,8 @@ COPY gpt2-schiele gpt2-schiele
 COPY schiele_names.txt schiele_names.txt
 WORKDIR .
 
-EXPOSE 8501
+EXPOSE 8080
 
 # Run
-#ENTRYPOINT ["streamlit", "run"]
-#CMD ["app.py", "–-server.port=8080", "–-server.address=0.0.0.0"]
-CMD ["streamlit", "run", "app.py", "–-server.port=8080", "–-server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8080", "--server.address=0.0.0.0"]
 
