@@ -8,7 +8,6 @@
   "bos_token_id": 50256,
   "embd_pdrop": 0.1,
   "eos_token_id": 50256,
-  "gradient_checkpointing": false,
   "initializer_range": 0.02,
   "layer_norm_epsilon": 1e-05,
   "model_type": "gpt2",
@@ -18,7 +17,9 @@
   "n_inner": null,
   "n_layer": 12,
   "n_positions": 1024,
+  "reorder_and_upcast_attn": false,
   "resid_pdrop": 0.1,
+  "scale_attn_by_inverse_layer_idx": false,
   "scale_attn_weights": true,
   "summary_activation": null,
   "summary_first_dropout": 0.1,
@@ -31,7 +32,8 @@
       "max_length": 50
     }
   },
-  "transformers_version": "4.7.0",
+  "torch_dtype": "float32",
+  "transformers_version": "4.15.0",
   "use_cache": true,
   "vocab_size": 52000
 }
